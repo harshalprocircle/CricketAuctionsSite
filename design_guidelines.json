@@ -1,0 +1,144 @@
+{
+  "theme_and_archetype": {
+    "domain": "Sports Tournament Auction",
+    "theme": "DARK",
+    "archetype": "Archetype 2 (Performance Pro)",
+    "vibe": "Energetic, stadium-like, strong typography, dramatic player-card focal points, broadcast graphics style"
+  },
+  "colors": {
+    "base": {
+      "background": "#0A0A0A",
+      "surface_1": "#121212",
+      "surface_2": "#1E1E1E",
+      "surface_glass": "rgba(18, 18, 18, 0.7)"
+    },
+    "brand": {
+      "primary": "#EAB308", 
+      "secondary": "#3B82F6",
+      "accent_neon": "#22C55E" 
+    },
+    "text": {
+      "primary": "#FFFFFF",
+      "secondary": "#A3A3A3",
+      "accent": "#EAB308",
+      "inverse": "#0A0A0A"
+    },
+    "borders": {
+      "subtle": "rgba(255, 255, 255, 0.1)",
+      "highlight": "rgba(234, 179, 8, 0.5)",
+      "divider": "#262626"
+    },
+    "status": {
+      "sold": "#22C55E",
+      "unsold": "#EF4444",
+      "current": "#3B82F6"
+    }
+  },
+  "typography": {
+    "fonts": {
+      "headings": "'Bebas Neue', sans-serif",
+      "body": "'Manrope', sans-serif",
+      "mono": "'JetBrains Mono', monospace"
+    },
+    "rules": {
+      "headings": {
+        "letter_spacing": "tracking-tight",
+        "transform": "uppercase",
+        "weight": "font-normal"
+      },
+      "body": {
+        "letter_spacing": "tracking-normal",
+        "weight": "font-medium"
+      },
+      "labels": {
+        "letter_spacing": "tracking-[0.15em]",
+        "transform": "uppercase",
+        "size": "text-xs"
+      }
+    },
+    "scales": {
+      "h1": "text-5xl sm:text-6xl md:text-7xl",
+      "h2": "text-4xl sm:text-5xl",
+      "h3": "text-2xl sm:text-3xl",
+      "body": "text-base",
+      "small": "text-sm"
+    }
+  },
+  "spacing_and_layout": {
+    "philosophy": "Control Room Grid (Dense, Data-heavy, High contrast) for dashboards. Bento-style layouts with absolute pixel-perfect alignment.",
+    "container_padding": "p-4 md:p-6 lg:p-8",
+    "bento_grid": {
+      "dashboard": "grid-cols-1 lg:grid-cols-12 gap-4 or gap-6",
+      "hero_card_span": "lg:col-span-8",
+      "leaderboard_span": "lg:col-span-4"
+    },
+    "surfaces": {
+      "cards": "bg-[#121212] border border-white/10 rounded-xl overflow-hidden",
+      "glass_panels": "bg-black/60 backdrop-blur-xl border border-white/10",
+      "active_states": "border-[#EAB308]/50 shadow-[0_0_15px_rgba(234,179,8,0.2)]"
+    }
+  },
+  "components": {
+    "navigation": {
+      "style": "Glassmorphism header, sticky top, z-50",
+      "links": "Bold, uppercase, subtle hover states with primary color bottom border"
+    },
+    "live_auction_card": {
+      "layout": "Massive split layout: Player photo takes up 50% width, stats and bidding form take up the rest.",
+      "visuals": "Use dynamic background gradients matching the player's role or status. Heavy use of Bebas Neue for base price and current bid."
+    },
+    "leaderboard": {
+      "layout": "Vertical list, dense rows. Team logo, owner name, budget progress bar.",
+      "visuals": "Use high contrast progress bars for budget (e.g., green for >50%, yellow for 20-50%, red for <20%)."
+    },
+    "data_tables": {
+      "style": "Shadcn UI table, dark mode optimized. Minimal borders, alternating row colors (bg-transparent vs bg-white/5)."
+    },
+    "buttons": {
+      "primary": "bg-[#EAB308] text-black font-bold uppercase tracking-wider hover:bg-[#FACC15] transition-colors rounded-md",
+      "secondary": "bg-transparent border border-white/20 text-white hover:bg-white/10 rounded-md"
+    }
+  },
+  "motion": {
+    "interactions": {
+      "hover": "Scale up slightly (scale-105) for player cards, highlight border.",
+      "bid_update": "Number ticker animation or subtle flash (bg-yellow-500/20 to transparent) when a bid is placed."
+    },
+    "transitions": "transition-all duration-200 ease-in-out"
+  },
+  "media": {
+    "image_urls": {
+      "dashboard_background": {
+        "url": "https://images.pexels.com/photos/36230651/pexels-photo-36230651.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Night cricket match crowd, used for faint atmospheric background blending."
+      },
+      "default_player_silhouette": {
+        "url": "https://images.unsplash.com/photo-1663832476765-d683c3789ac0?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Nzh8MHwxfHNlYXJjaHwyfHxjcmlja2V0JTIwcGxheWVyJTIwc2lsaG91ZXR0ZXxlbnwwfHx8fDE3Nzg3NTc2MjZ8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Default placeholder for player profiles."
+      },
+      "default_team_logo": {
+        "url": "https://images.unsplash.com/photo-1761325970487-05c2541653eb?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTV8MHwxfHNlYXJjaHwxfHxzcG9ydHMlMjB0ZWFtJTIwbG9nbyUyMGVtYmxlbXxlbnwwfHx8fDE3Nzg5MzY1MzV8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Default placeholder for team/owner logos."
+      }
+    }
+  },
+  "accessibility_and_testing": {
+    "contrast": "Ensure all text passes WCAG AA. Use Text Shadow over images.",
+    "testing_attributes": "All interactive elements (buttons, inputs, tabs, table rows) MUST have role-based data-testid attributes (e.g., data-testid='submit-bid-button', data-testid='player-row-ms-dhoni')."
+  },
+  "instructions_to_main_agent": {
+    "libraries": [
+      "lucide-react",
+      "@radix-ui/react-icons",
+      "framer-motion",
+      "recharts (for budget distribution if needed)"
+    ],
+    "implementation_notes": [
+      "Use pure Tailwind classes for the Live Auction grid structure (avoid Shadcn Cards for the main Hero UI to allow heavy customization).",
+      "Use Shadcn UI for forms, dialogs, selects, and tables.",
+      "The 'Bebas Neue' font should be imported via Google Fonts in index.css or via next/font if using Next.js (though environment states React). Add `@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;700&display=swap');` to the main CSS.",
+      "Ensure the polling updates do not cause the entire UI to flash. Use React state carefully.",
+      "Build the Google Drive image URL parser function to convert shareable links to direct `lh3.googleusercontent.com` or `drive.google.com/uc?id=` links."
+    ]
+  }
+}
