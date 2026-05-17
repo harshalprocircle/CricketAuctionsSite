@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { api, formatPts } from "@/lib/api";
 import { SmartImage } from "@/components/SmartImage";
-import { TEAM_FALLBACK, PLAYER_FALLBACK } from "@/lib/driveLink";
-import { Button } from "@/components/ui/button";
+import { TEAM_FALLBACK, PLAYER_FALLBACK } from "@/lib/driveLink";import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
     Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
@@ -220,7 +219,16 @@ export default function OwnersPage() {
                             <Input value={form.photo_url} onChange={e => setForm({ ...form, photo_url: e.target.value })}
                                 placeholder="https://drive.google.com/file/d/FILE_ID/view"
                                 className="bg-black/40 border-white/15 mt-1" data-testid="owner-photo-input" />
-                            <p className="text-[10px] text-white/40 mt-1">Paste a shareable Drive link — we'll convert it automatically.</p>
+                            <div className="flex items-start gap-3 mt-2">
+                                {form.photo_url ? (
+                                    <SmartImage src={form.photo_url} alt="Preview" fallback={TEAM_FALLBACK}
+                                        className="w-16 h-16 rounded-md object-cover border border-white/15" />
+                                ) : null}
+                                <p className="text-[10px] text-white/40 leading-relaxed">
+                                    Paste a Drive share link — we convert it automatically.<br />
+                                    <span className="text-[#EAB308]">Important:</span> in Drive, set sharing to <span className="text-white/70">"Anyone with the link → Viewer"</span>, otherwise Google blocks the image.
+                                </p>
+                            </div>
                         </div>
                     </div>
                     <DialogFooter>
