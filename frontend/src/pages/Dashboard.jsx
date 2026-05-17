@@ -112,7 +112,7 @@ export default function Dashboard() {
         <div className="space-y-6" data-testid="dashboard-page">
             {/* Hero stats */}
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                <StatChip label="TOURNAMENT" value={settings?.tournament_name?.split(" ")[0] || "—"} />
+                <StatChip label="TOURNAMENT" value={settings?.tournament_name || "—"} />
                 <StatChip label="BUDGET / OWNER" value={formatPts(settings?.starting_budget || 0)} accent="text-[#EAB308]" />
                 <StatChip label="OWNERS" value={stats?.owners ?? 0} />
                 <StatChip label="PLAYERS SOLD" value={`${stats?.sold ?? 0} / ${stats?.total_players ?? 0}`} accent="text-[#22C55E]" />
