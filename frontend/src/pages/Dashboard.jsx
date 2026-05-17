@@ -283,8 +283,8 @@ export default function Dashboard() {
                                             className="w-12 h-12 rounded-md object-cover border border-white/10"
                                         />
                                         <div className="flex-1 min-w-0">
-                                            <div className="font-display text-lg tracking-wide truncate">{o.team_name}</div>
-                                            <div className="text-xs text-white/50 truncate">{o.name} · {o.players_count} players</div>
+                                            <div className="font-display text-lg tracking-wide truncate">{o.name}</div>
+                                            <div className="text-xs text-white/50 truncate">{o.team_name} · {o.players_count} players</div>
                                         </div>
                                         <div className="text-right">
                                             <div className="font-display text-xl text-white">{formatPts(o.remaining)}</div>
