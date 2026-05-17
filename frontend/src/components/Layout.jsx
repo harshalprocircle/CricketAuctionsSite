@@ -39,7 +39,7 @@ export default function Layout() {
                             <span className="absolute -bottom-1 -right-1 w-3 h-3 bg-[#22C55E] rounded-full ring-2 ring-black"></span>
                         </div>
                         <div className="leading-none">
-                            <div className="font-display text-2xl tracking-wider">SLAM AUCTION</div>
+                            <div className="font-display text-2xl tracking-wider">VHD CHAMPIONS AUCTION</div>
                             <div className="text-[10px] tracking-[0.3em] text-white/50 -mt-0.5">LIVE BIDDING CONSOLE</div>
                         </div>
                     </NavLink>
@@ -104,7 +104,7 @@ export default function Layout() {
             </main>
 
             <footer className="border-t border-white/10 mt-12 py-6 text-center text-xs tracking-widest text-white/40">
-                <span className="font-display text-sm tracking-[0.4em]">SLAM AUCTION</span> · STADIUM CONSOLE
+                <span className="font-display text-sm tracking-[0.4em]">VHD CHAMPIONS AUCTION</span> · STADIUM CONSOLE
             </footer>
         </div>
     );
