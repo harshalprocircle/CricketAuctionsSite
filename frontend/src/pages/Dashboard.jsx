@@ -19,7 +19,7 @@ const POLL_MS = 2500;
 
 const StatChip = ({ label, value, accent }) => (
     <div className="px-6 py-5 bg-white/5 rounded-xl border border-white/10">
-        <div className="text-xs tracking-[0.25em] text-white/50">{label}</div>
+        <div className="text-xs tracking-[0.25em] text-white/80 font-bold">{label}</div>
         <div className={`font-display text-4xl md:text-5xl mt-1 ${accent || "text-white"}`}>{value}</div>
     </div>
 );
