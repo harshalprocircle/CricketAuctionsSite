@@ -15,7 +15,7 @@ import {
     Tabs, TabsList, TabsTrigger,
 } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Plus, Upload, Edit2, Trash2, Gavel, Search } from "lucide-react";
+import { Plus, Upload, Edit2, Trash2, Gavel, Search, Trash } from "lucide-react";
 
 const ROLES = ["Batsman", "Bowler", "All-Rounder", "Wicket-Keeper"];
 const emptyForm = { name: "", role: "All-Rounder", base_price: 100, photo_url: "" };
@@ -97,10 +97,19 @@ export default function PlayersPage() {
         if (!f) return;
         try {
             const res = await api.importPlayers(f);
-            toast.success(`Imported ${res.created} players`);
+            toast.success(`Imported ${res.created} players${res.skipped ? ` (${res.skipped} skipped)` : ""}`);
             load();
         } catch (e2) { toast.error("Import failed"); }
         e.target.value = "";
+    };
+
+    const deleteAll = async () => {
+        if (players.length === 0) { toast.info("No players to delete"); return; }
+        if (!window.confirm(`Delete ALL ${players.length} players? All transactions will also be cleared. This cannot be undone.`)) return;
+        if (!window.confirm("Are you absolutely sure? Click OK once more to confirm.")) return;
+        const res = await api.deleteAllPlayers();
+        toast.success(`Deleted ${res.deleted} players`);
+        load();
     };
 
     return (
@@ -112,6 +121,10 @@ export default function PlayersPage() {
                 </div>
                 <div className="flex flex-wrap gap-2">
                     <input type="file" ref={fileInputRef} accept=".csv" className="hidden" onChange={handleCsv} data-testid="players-csv-input" />
+                    <Button variant="secondary" className="bg-[#EF4444]/10 border border-[#EF4444]/30 text-[#EF4444] hover:bg-[#EF4444]/20 font-display tracking-widest"
+                        onClick={deleteAll} data-testid="delete-all-players-btn">
+                        <Trash className="w-4 h-4 mr-1.5" /> DELETE ALL
+                    </Button>
                     <Button variant="secondary" className="bg-white/5 border border-white/10 hover:bg-white/10 font-display tracking-widest"
                         onClick={() => fileInputRef.current.click()} data-testid="import-players-btn">
                         <Upload className="w-4 h-4 mr-1.5" /> IMPORT CSV

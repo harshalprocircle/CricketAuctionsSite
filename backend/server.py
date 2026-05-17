@@ -155,8 +155,33 @@ async def list_owners():
     return [await _owner_with_budget(d) for d in docs]
 
 
+async def _owner_name_exists(name: str, exclude_id: Optional[str] = None) -> bool:
+    q = {"name": {"$regex": f"^{name.strip()}$", "$options": "i"}}
+    if exclude_id:
+        q["id"] = {"$ne": exclude_id}
+    return await db.owners.find_one(q, {"_id": 1}) is not None
+
+
+async def _team_name_exists(team_name: str, exclude_id: Optional[str] = None) -> bool:
+    q = {"team_name": {"$regex": f"^{team_name.strip()}$", "$options": "i"}}
+    if exclude_id:
+        q["id"] = {"$ne": exclude_id}
+    return await db.owners.find_one(q, {"_id": 1}) is not None
+
+
+async def _player_name_exists(name: str, exclude_id: Optional[str] = None) -> bool:
+    q = {"name": {"$regex": f"^{name.strip()}$", "$options": "i"}}
+    if exclude_id:
+        q["id"] = {"$ne": exclude_id}
+    return await db.players.find_one(q, {"_id": 1}) is not None
+
+
 @api_router.post("/owners")
 async def create_owner(payload: OwnerCreate):
+    if await _owner_name_exists(payload.name):
+        raise HTTPException(400, f"An owner named '{payload.name}' already exists")
+    if await _team_name_exists(payload.team_name):
+        raise HTTPException(400, f"Team '{payload.team_name}' already exists")
     owner = Owner(**payload.model_dump())
     await db.owners.insert_one(owner.model_dump())
     return await _owner_with_budget(owner.model_dump())
@@ -167,6 +192,10 @@ async def update_owner(owner_id: str, payload: OwnerUpdate):
     update = {k: v for k, v in payload.model_dump().items() if v is not None}
     if not update:
         raise HTTPException(400, "No fields to update")
+    if "name" in update and await _owner_name_exists(update["name"], exclude_id=owner_id):
+        raise HTTPException(400, f"An owner named '{update['name']}' already exists")
+    if "team_name" in update and await _team_name_exists(update["team_name"], exclude_id=owner_id):
+        raise HTTPException(400, f"Team '{update['team_name']}' already exists")
     res = await db.owners.update_one({"id": owner_id}, {"$set": update})
     if res.matched_count == 0:
         raise HTTPException(404, "Owner not found")
@@ -200,6 +229,8 @@ async def list_players():
 
 @api_router.post("/players")
 async def create_player(payload: PlayerCreate):
+    if await _player_name_exists(payload.name):
+        raise HTTPException(400, f"A player named '{payload.name}' already exists")
     player = Player(**payload.model_dump())
     await db.players.insert_one(player.model_dump())
     return player.model_dump()
@@ -210,6 +241,8 @@ async def update_player(player_id: str, payload: PlayerUpdate):
     update = {k: v for k, v in payload.model_dump().items() if v is not None}
     if not update:
         raise HTTPException(400, "No fields to update")
+    if "name" in update and await _player_name_exists(update["name"], exclude_id=player_id):
+        raise HTTPException(400, f"A player named '{update['name']}' already exists")
     res = await db.players.update_one({"id": player_id}, {"$set": update})
     if res.matched_count == 0:
         raise HTTPException(404, "Player not found")
@@ -318,16 +351,21 @@ async def bulk_import_owners(file: UploadFile = File(...)):
     content = (await file.read()).decode("utf-8", errors="ignore")
     reader = csv.DictReader(io.StringIO(content))
     created = 0
+    skipped = 0
     for row in reader:
         name = (row.get("name") or row.get("Name") or "").strip()
         team = (row.get("team_name") or row.get("team") or row.get("Team") or "").strip()
         photo = (row.get("photo_url") or row.get("photo") or row.get("Photo") or "").strip()
         if not name or not team:
+            skipped += 1
+            continue
+        if await _owner_name_exists(name) or await _team_name_exists(team):
+            skipped += 1
             continue
         owner = Owner(name=name, team_name=team, photo_url=photo)
         await db.owners.insert_one(owner.model_dump())
         created += 1
-    return {"created": created}
+    return {"created": created, "skipped": skipped}
 
 
 @api_router.post("/players/bulk-import")
@@ -335,6 +373,7 @@ async def bulk_import_players(file: UploadFile = File(...)):
     content = (await file.read()).decode("utf-8", errors="ignore")
     reader = csv.DictReader(io.StringIO(content))
     created = 0
+    skipped = 0
     for row in reader:
         name = (row.get("name") or row.get("Name") or "").strip()
         role = (row.get("role") or row.get("Role") or "All-Rounder").strip() or "All-Rounder"
@@ -344,11 +383,34 @@ async def bulk_import_players(file: UploadFile = File(...)):
             base = 100
         photo = (row.get("photo_url") or row.get("photo") or row.get("Photo") or "").strip()
         if not name:
+            skipped += 1
+            continue
+        if await _player_name_exists(name):
+            skipped += 1
             continue
         player = Player(name=name, role=role, base_price=base, photo_url=photo)
         await db.players.insert_one(player.model_dump())
         created += 1
-    return {"created": created}
+    return {"created": created, "skipped": skipped}
+
+
+@api_router.delete("/owners")
+async def delete_all_owners():
+    # release any sold players & clear all transactions
+    await db.players.update_many(
+        {"owner_id": {"$ne": None}},
+        {"$set": {"status": "unsold", "sold_price": None, "owner_id": None}},
+    )
+    await db.transactions.delete_many({})
+    res = await db.owners.delete_many({})
+    return {"deleted": res.deleted_count}
+
+
+@api_router.delete("/players")
+async def delete_all_players():
+    await db.transactions.delete_many({})
+    res = await db.players.delete_many({})
+    return {"deleted": res.deleted_count}
 
 
 # ---------- Reset ----------

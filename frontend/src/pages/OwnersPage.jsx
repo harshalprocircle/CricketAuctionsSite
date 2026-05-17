@@ -8,7 +8,7 @@ import {
     Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Plus, Upload, Edit2, Trash2, Settings as SettingsIcon, RotateCcw } from "lucide-react";
+import { Plus, Upload, Edit2, Trash2, Settings as SettingsIcon, RotateCcw, Trash } from "lucide-react";
 
 const empty = { name: "", team_name: "", photo_url: "" };
 
@@ -59,7 +59,7 @@ export default function OwnersPage() {
         if (!f) return;
         try {
             const res = await api.importOwners(f);
-            toast.success(`Imported ${res.created} owners`);
+            toast.success(`Imported ${res.created} owners${res.skipped ? ` (${res.skipped} skipped)` : ""}`);
             load();
         } catch (e2) { toast.error("Import failed"); }
         e.target.value = "";
@@ -96,6 +96,10 @@ export default function OwnersPage() {
                     <Button variant="secondary" className="bg-white/5 border border-white/10 hover:bg-white/10 font-display tracking-widest"
                         onClick={resetAuction} data-testid="reset-auction-btn">
                         <RotateCcw className="w-4 h-4 mr-1.5" /> RESET AUCTION
+                    </Button>
+                    <Button variant="secondary" className="bg-[#EF4444]/10 border border-[#EF4444]/30 text-[#EF4444] hover:bg-[#EF4444]/20 font-display tracking-widest"
+                        onClick={deleteAll} data-testid="delete-all-owners-btn">
+                        <Trash className="w-4 h-4 mr-1.5" /> DELETE ALL
                     </Button>
                     <input type="file" ref={fileInputRef} accept=".csv" className="hidden" onChange={handleCsv} data-testid="owners-csv-input" />
                     <Button variant="secondary" className="bg-white/5 border border-white/10 hover:bg-white/10 font-display tracking-widest"
@@ -237,6 +241,16 @@ export default function OwnersPage() {
                             <p className="text-[10px] text-white/40 mt-1">Applies to all owners. Default: 10,000.</p>
                         </div>
                     </div>
+                    <DialogFooter>
+                        <Button variant="ghost" onClick={() => setSettingsOpen(false)} className="text-white/70">Cancel</Button>
+                        <Button onClick={saveSettings} className="bg-[#EAB308] text-black hover:bg-[#FACC15] font-display tracking-widest"
+                            data-testid="save-settings-btn">SAVE</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+        </div>
+    );
+}
                     <DialogFooter>
                         <Button variant="ghost" onClick={() => setSettingsOpen(false)} className="text-white/70">Cancel</Button>
                         <Button onClick={saveSettings} className="bg-[#EAB308] text-black hover:bg-[#FACC15] font-display tracking-widest"

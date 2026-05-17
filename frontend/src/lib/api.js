@@ -13,6 +13,7 @@ export const api = {
     createOwner: (data) => http.post("/owners", data).then(r => r.data),
     updateOwner: (id, data) => http.put(`/owners/${id}`, data).then(r => r.data),
     deleteOwner: (id) => http.delete(`/owners/${id}`).then(r => r.data),
+    deleteAllOwners: () => http.delete("/owners").then(r => r.data),
     importOwners: (file) => {
         const fd = new FormData();
         fd.append("file", file);
@@ -23,6 +24,7 @@ export const api = {
     createPlayer: (data) => http.post("/players", data).then(r => r.data),
     updatePlayer: (id, data) => http.put(`/players/${id}`, data).then(r => r.data),
     deletePlayer: (id) => http.delete(`/players/${id}`).then(r => r.data),
+    deleteAllPlayers: () => http.delete("/players").then(r => r.data),
     setCurrent: (id) => http.post(`/players/${id}/set-current`).then(r => r.data),
     markUnsold: (id) => http.post(`/players/${id}/mark-unsold`).then(r => r.data),
     sellPlayer: (id, data) => http.post(`/players/${id}/sell`, data).then(r => r.data),
