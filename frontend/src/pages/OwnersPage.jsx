@@ -81,6 +81,15 @@ export default function OwnersPage() {
         load();
     };
 
+    const deleteAll = async () => {
+        if (owners.length === 0) { toast.info("No owners to delete"); return; }
+        if (!window.confirm(`Delete ALL ${owners.length} owners? Their players will be released back to the unsold pool and all transactions will be cleared. This cannot be undone.`)) return;
+        if (!window.confirm("Are you absolutely sure? Click OK once more to confirm.")) return;
+        const res = await api.deleteAllOwners();
+        toast.success(`Deleted ${res.deleted} owners`);
+        load();
+    };
+
     return (
         <div className="space-y-6" data-testid="owners-page">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
