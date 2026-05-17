@@ -18,9 +18,9 @@ import { Gavel, ChevronRight, Trophy, RefreshCw, Crown, Zap, Tag } from "lucide-
 const POLL_MS = 2500;
 
 const StatChip = ({ label, value, accent }) => (
-    <div className="px-4 py-3 bg-white/5 rounded-lg border border-white/10">
-        <div className="text-[10px] tracking-[0.25em] text-white/50">{label}</div>
-        <div className={`font-display text-2xl ${accent || "text-white"}`}>{value}</div>
+    <div className="px-6 py-5 bg-white/5 rounded-xl border border-white/10">
+        <div className="text-xs tracking-[0.25em] text-white/50">{label}</div>
+        <div className={`font-display text-4xl md:text-5xl mt-1 ${accent || "text-white"}`}>{value}</div>
     </div>
 );
 
