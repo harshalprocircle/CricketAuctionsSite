@@ -251,13 +251,3 @@ export default function OwnersPage() {
         </div>
     );
 }
-                    <DialogFooter>
-                        <Button variant="ghost" onClick={() => setSettingsOpen(false)} className="text-white/70">Cancel</Button>
-                        <Button onClick={saveSettings} className="bg-[#EAB308] text-black hover:bg-[#FACC15] font-display tracking-widest"
-                            data-testid="save-settings-btn">SAVE</Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
-        </div>
-    );
-}
