@@ -139,8 +139,8 @@ export default function OwnersPage() {
                                         className="w-full h-full object-cover opacity-60" />
                                     <div className="absolute inset-0 bg-gradient-to-t from-[#121212] via-[#121212]/40 to-transparent"></div>
                                     <div className="absolute bottom-3 left-4">
-                                        <div className="font-display text-3xl tracking-wide">{o.team_name}</div>
-                                        <div className="text-xs text-white/70">{o.name}</div>
+                                        <div className="font-display text-3xl tracking-wide">{o.name}</div>
+                                        <div className="text-xs text-white/70">{o.team_name}</div>
                                     </div>
                                 </div>
                                 <div className="p-4 space-y-3">
