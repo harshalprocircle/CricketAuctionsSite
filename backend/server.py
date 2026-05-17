@@ -346,16 +346,31 @@ async def list_transactions():
 
 
 # ---------- Bulk import ----------
+def _norm_key(k: str) -> str:
+    """Normalize a CSV header to a comparable token (lowercase, alphanumeric only)."""
+    return "".join(ch for ch in (k or "").lower() if ch.isalnum())
+
+
+def _row_get(row: dict, aliases: list) -> str:
+    """Pick the first column whose normalized header matches any alias."""
+    norm_map = { _norm_key(k): v for k, v in row.items() if k is not None }
+    for a in aliases:
+        v = norm_map.get(_norm_key(a))
+        if v is not None and str(v).strip():
+            return str(v).strip()
+    return ""
+
+
 @api_router.post("/owners/bulk-import")
 async def bulk_import_owners(file: UploadFile = File(...)):
-    content = (await file.read()).decode("utf-8", errors="ignore")
+    content = (await file.read()).decode("utf-8-sig", errors="ignore")
     reader = csv.DictReader(io.StringIO(content))
     created = 0
     skipped = 0
     for row in reader:
-        name = (row.get("name") or row.get("Name") or "").strip()
-        team = (row.get("team_name") or row.get("team") or row.get("Team") or "").strip()
-        photo = (row.get("photo_url") or row.get("photo") or row.get("Photo") or "").strip()
+        name = _row_get(row, ["name", "owner name", "owner"])
+        team = _row_get(row, ["team_name", "team name", "team", "franchise"])
+        photo = _row_get(row, ["photo_url", "photo", "image", "logo", "team logo", "photo google drive link", "photo google drive", "drive link", "logo url"])
         if not name or not team:
             skipped += 1
             continue
@@ -370,18 +385,31 @@ async def bulk_import_owners(file: UploadFile = File(...)):
 
 @api_router.post("/players/bulk-import")
 async def bulk_import_players(file: UploadFile = File(...)):
-    content = (await file.read()).decode("utf-8", errors="ignore")
+    content = (await file.read()).decode("utf-8-sig", errors="ignore")
     reader = csv.DictReader(io.StringIO(content))
     created = 0
     skipped = 0
     for row in reader:
-        name = (row.get("name") or row.get("Name") or "").strip()
-        role = (row.get("role") or row.get("Role") or "All-Rounder").strip() or "All-Rounder"
+        name = _row_get(row, ["name", "player name", "player"])
+        role_raw = _row_get(row, ["role", "position", "type"]) or "All-Rounder"
+        # normalize common role variants
+        rn = role_raw.lower().replace("-", " ").replace("_", " ").strip()
+        if "all" in rn and "round" in rn:
+            role = "All-Rounder"
+        elif "wicket" in rn or "keeper" in rn or rn == "wk":
+            role = "Wicket-Keeper"
+        elif "bowl" in rn:
+            role = "Bowler"
+        elif "bat" in rn:
+            role = "Batsman"
+        else:
+            role = role_raw or "All-Rounder"
+        base_str = _row_get(row, ["base_price", "base price", "price", "baseprice"]) or "100"
         try:
-            base = int(float((row.get("base_price") or row.get("price") or row.get("Base Price") or "100")))
+            base = int(float(base_str))
         except ValueError:
             base = 100
-        photo = (row.get("photo_url") or row.get("photo") or row.get("Photo") or "").strip()
+        photo = _row_get(row, ["photo_url", "photo", "image", "picture", "drive link", "photo google drive link", "photo google drive", "google drive link"])
         if not name:
             skipped += 1
             continue
